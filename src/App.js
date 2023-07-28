@@ -3,7 +3,7 @@ import "./App.css";
 import SocialMediaForm from "./components/SocialMediaForm";
 import Results from "./components/Results";
 import { useState } from "react";
-
+import Transcribe from "./components/Transcribe";
 function App() {
   const [title, setTitle] = useState("");
   const [caption, setCaption] = useState("");
@@ -28,6 +28,7 @@ function App() {
       <img src={logo} className="App-logo" alt="logo" />
       <SocialMediaForm onSubmit={onSubmit} />
       <Results title={title} caption={caption} />
+      <Transcribe />
     </div>
   );
 }
