@@ -3,24 +3,16 @@ import React from "react";
 function Transcribe() {
   const transcribeFile = async (event) => {
     event.preventDefault();
+    const fileElement = document.getElementById("file-upload");
+    const file = fileElement.files[0];
+    console.log(file);
     const formData = new FormData(event.target);
-
-    console.log(formData);
     const response = await fetch("http://localhost:5000/transcribe", {
       method: "POST",
       body: formData,
-    });
-
-    console.log(response);
-    const data = await response.json();
-
-    if (data.transcription) {
-      localStorage.setItem("transcription", data.transcription);
-      localStorage.setItem("audioFileName", data.audioFileName);
-      window.location.href = "/transcribe.html";
-    } else {
-      console.error("Error:", data.message);
-    }
+    })
+      .then((result) => result.json())
+      .then((data) => console.log(data));
   };
   return (
     <form
