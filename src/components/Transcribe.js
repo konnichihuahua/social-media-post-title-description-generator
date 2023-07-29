@@ -1,19 +1,19 @@
 import React from "react";
-
-function Transcribe() {
+import { useState } from "react";
+function Transcribe({ setCaption }) {
+  const [transcript, setTranscript] = useState("");
   const transcribeFile = async (event) => {
     event.preventDefault();
-    const fileElement = document.getElementById("file-upload");
-    const file = fileElement.files[0];
-    console.log(file);
+
     const formData = new FormData(event.target);
     const response = await fetch("http://localhost:5000/transcribe", {
       method: "POST",
       body: formData,
     })
       .then((result) => result.json())
-      .then((data) => console.log(data));
+      .then((data) => setCaption(data.caption));
   };
+
   return (
     <form
       id="transcription-form"
@@ -24,7 +24,7 @@ function Transcribe() {
         <label>
           <b>Select file:</b>
         </label>
-        <input id="file-upload" type="file" name="file" accept=".mp3" />
+        <input id="file-upload" type="file" name="file" accept=".mp4" />
       </div>
       <input
         type="submit"

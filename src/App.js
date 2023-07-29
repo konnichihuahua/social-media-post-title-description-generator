@@ -23,12 +23,13 @@ function App() {
       .then((response) => response.json())
       .then((data) => setCaption(data.description));
   };
+
   return (
     <div className="App flex flex-col justify-center align-center p-5 ">
       <img src={logo} className="App-logo" alt="logo" />
       <SocialMediaForm onSubmit={onSubmit} />
       <Results title={title} caption={caption} />
-      <Transcribe />
+      <Transcribe setCaption={setCaption} />
     </div>
   );
 }
