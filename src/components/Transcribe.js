@@ -1,7 +1,6 @@
 import React from "react";
 import { useState } from "react";
-function Transcribe({ setCaption }) {
-  const [transcript, setTranscript] = useState("");
+function Transcribe({ setCaption, setTitle }) {
   const transcribeFile = async (event) => {
     event.preventDefault();
 
@@ -11,7 +10,10 @@ function Transcribe({ setCaption }) {
       body: formData,
     })
       .then((result) => result.json())
-      .then((data) => setCaption(data.caption));
+      .then((data) => {
+        setTitle(data.caption[0]);
+        setCaption(data.caption[1]);
+      });
   };
 
   return (
