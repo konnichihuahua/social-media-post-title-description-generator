@@ -26,10 +26,12 @@ function Results({ title, caption }) {
           <h3 className="text-xl">Description:</h3>
           <div className="flex justify-center items-center">
             <div>{caption}</div>
-            <AiFillCopy
-              className="h-10 w-10"
-              onClick={() => copyContent(caption)}
-            />
+            <div>
+              <AiFillCopy
+                className="h-10 w-10"
+                onClick={() => copyContent(caption)}
+              />
+            </div>
           </div>
         </div>
       </div>
