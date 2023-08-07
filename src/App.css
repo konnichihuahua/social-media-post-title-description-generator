@@ -10,7 +10,14 @@
   max-height: 100vh;
   color: white;
 }
-
+.main-content {
+  max-width: 80vw;;
+}
+@media (max-width: 800px) {
+  .main-content {
+    flex-direction: column;
+  }
+}
 .drop-container {
   position: relative;
   display: flex;
@@ -18,14 +25,31 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 250px;
+  height: 40vh;
+  width: 500px;
   padding: 20px;
   border-radius: 10px;
   border: 2px dashed #555;
 background-color: #111827;
   cursor: pointer;
   transition: background .2s ease-in-out, border .2s ease-in-out;
+}
+
+.result {
+  position: relative;
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   
+  
+  padding: 20px;
+  border-radius: 10px;
+  border: 2px dashed #555;
+background-color: #111827;
+  cursor: pointer;
+  transition: background .2s ease-in-out, border .2s ease-in-out;
 }
 
 .drop-container:hover,

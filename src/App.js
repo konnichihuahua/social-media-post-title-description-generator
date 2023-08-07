@@ -9,8 +9,8 @@ import { fetchFile, toBlobURL } from "@ffmpeg/util";
 import { useState, useRef } from "react";
 
 function App() {
-  const [title, setTitle] = useState("");
-  const [caption, setCaption] = useState("");
+  const [title, setTitle] = useState("------------------");
+  const [caption, setCaption] = useState("------------------");
   const [fromText, setFromText] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [resultIsLoaded, setResultIsLoaded] = useState(true);
@@ -19,8 +19,9 @@ function App() {
   const messageRef = useRef(null);
 
   const onSubmit = (data) => {
-    getCaption(data);
+    setResultIsLoaded(false);
     getTitle(data);
+    getCaption(data);
   };
 
   const load = async () => {
@@ -48,8 +49,12 @@ function App() {
   const getCaption = (data) => {
     fetch(`http://localhost:5000/get/description/${data}`)
       .then((response) => response.json())
-      .then((data) => setCaption(data.description));
+      .then((data) => {
+        setCaption(data.description);
+        setResultIsLoaded(true);
+      });
   };
+
   load();
 
   return (
@@ -57,7 +62,7 @@ function App() {
       <nav className="bg-white dark:bg-gray-900 fixed w-full z-20 top-0 left-0 border-b border-gray-200 dark:border-gray-600">
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
           <a className="flex items-center" href="/">
-            <img src={logo} className="h-8 mr-3" alt="Flowbite Logo" />
+            <img src={logo} className="h-12" alt="Clip2Gram Logo" />
             <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
               Clip2Gram
             </span>
@@ -118,9 +123,12 @@ function App() {
       </nav>
 
       {loaded ? (
-        <div className="main-content flex flex-col justify-center items-center">
+        <div className="main-content flex justify-center items-center">
           {fromText ? (
-            <SocialMediaForm onSubmit={onSubmit} />
+            <SocialMediaForm
+              onSubmit={onSubmit}
+              setResultIsLoaded={setResultIsLoaded}
+            />
           ) : (
             <Transcribe
               setCaption={setCaption}
@@ -128,6 +136,7 @@ function App() {
               setResultIsLoaded={setResultIsLoaded}
             />
           )}
+
           {resultIsLoaded ? (
             <Results title={title} caption={caption} />
           ) : (

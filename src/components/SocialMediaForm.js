@@ -12,8 +12,8 @@ const SocialMediaForm = ({ onSubmit }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="flex flex-col">
-        <label htmlFor="description">Write a caption and title about:</label>
+      <div className="flex flex-col drop-container" id="dropcontainer">
+        <span className="drop-title">Write title and caption about:</span>
         <input
           type="text"
           id="description"
@@ -22,11 +22,11 @@ const SocialMediaForm = ({ onSubmit }) => {
           onChange={(e) => setDescription(e.target.value)}
           required
         />
-      </div>
-      <div className="mt-3">
-        <button className="bg-blue-500 rounded-md px-5 py-3" type="submit">
-          Generate
-        </button>
+        <input
+          type="submit"
+          value="Generate"
+          className="text-xl min-w-full text-white bg-blue-950 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg px-4 py-2 text-center mr-3 md:mr-0 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+        />
       </div>
     </form>
   );
