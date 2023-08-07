@@ -3,10 +3,12 @@ import { useState } from "react";
 import FileUpload from "./FileUpload";
 
 function Transcribe({ setCaption, setTitle, setResultIsLoaded }) {
+  const [file, setFile] = useState(null);
   const transcribeFile = async (event) => {
     event.preventDefault();
-    setResultIsLoaded(false);
+    console.log(event.target);
     const formData = new FormData(event.target);
+    setResultIsLoaded(false);
     const response = await fetch("http://localhost:5000/transcribe", {
       method: "POST",
       body: formData,
@@ -21,7 +23,13 @@ function Transcribe({ setCaption, setTitle, setResultIsLoaded }) {
 
   return (
     <div>
-      <FileUpload transcribeFile={transcribeFile} />
+      <FileUpload
+        setCaption={setCaption}
+        file={file}
+        setFile={setFile}
+        setTitle={setTitle}
+        setResultIsLoaded={setResultIsLoaded}
+      />
     </div>
   );
 }

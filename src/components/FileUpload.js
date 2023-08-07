@@ -1,19 +1,67 @@
-import React, { useState } from "react";
-
-const FileUpload = ({ transcribeFile }) => {
+import React, { useState, useRef } from "react";
+import { FFmpeg } from "@ffmpeg/ffmpeg";
+import { fetchFile, toBlobURL } from "@ffmpeg/util";
+import { Readable } from "stream";
+const FileUpload = ({
+  setTitle,
+  setCaption,
+  setResultIsLoaded,
+  file,
+  setFile,
+}) => {
+  const ffmpegRef = useRef(new FFmpeg());
+  const videoRef = useRef(null);
+  const messageRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
 
   const handleFileChange = (event) => {
     event.preventDefault();
     const file = event.target.files[0];
+    setFile(file);
   };
-
+  const load = async () => {
+    const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.1/dist/umd";
+    const ffmpeg = ffmpegRef.current;
+    ffmpeg.on("log", ({ message }) => {
+      console.log(message);
+    });
+    // toBlobURL is used to bypass CORS issue, urls with the same
+    // domain can be used directly.
+    await ffmpeg.load({
+      coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
+      wasmURL: await toBlobURL(
+        `${baseURL}/ffmpeg-core.wasm`,
+        "application/wasm"
+      ),
+    });
+  };
+  const transcodeFile = async (event) => {
+    event.preventDefault();
+    setResultIsLoaded(false);
+    await load();
+    const ffmpeg = ffmpegRef.current;
+    await ffmpeg.writeFile("input.mp4", await fetchFile(file));
+    await ffmpeg.exec(["-i", "input.mp4", "output.mp3"]);
+    const data = await ffmpeg.readFile("output.mp3");
+    const formData = new FormData(event.target);
+    formData.append("file", new Blob([data.buffer]));
+    const response = await fetch("http://localhost:5000/mp4", {
+      method: "POST",
+      body: formData,
+    })
+      .then((result) => result.json())
+      .then((data) => {
+        setTitle(data.caption[0]);
+        setCaption(data.caption[1]);
+        setResultIsLoaded(true);
+      });
+  };
   return (
     <form
       className="flex flex-col items-center justify-center"
       id="transcription-form"
       encType="multipart/form-data"
-      onSubmit={transcribeFile}
+      onSubmit={transcodeFile}
     >
       <label className="drop-container" id="dropcontainer">
         <span className="drop-title">Drop files here</span>
