@@ -42,7 +42,7 @@ const FileUpload = ({
     const data = await ffmpeg.readFile("output.mp3");
     const formData = new FormData(event.target);
     formData.append("file", new Blob([data.buffer]));
-    await fetch("https://nice-lime-pigeon-veil.cyclic.app/mp4", {
+    await fetch("http://localhost:5000/mp4", {
       method: "POST",
       body: formData,
     })
