@@ -1,7 +1,7 @@
-import React, { useState, useRef } from "react";
+import React, { useRef } from "react";
 import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { fetchFile, toBlobURL } from "@ffmpeg/util";
-import { Readable } from "stream";
+
 const FileUpload = ({
   setTitle,
   setCaption,
@@ -10,9 +10,6 @@ const FileUpload = ({
   setFile,
 }) => {
   const ffmpegRef = useRef(new FFmpeg());
-  const videoRef = useRef(null);
-  const messageRef = useRef(null);
-  const [selectedFile, setSelectedFile] = useState(null);
 
   const handleFileChange = (event) => {
     event.preventDefault();
@@ -45,7 +42,7 @@ const FileUpload = ({
     const data = await ffmpeg.readFile("output.mp3");
     const formData = new FormData(event.target);
     formData.append("file", new Blob([data.buffer]));
-    const response = await fetch("http://localhost:5000/mp4", {
+    await fetch("http://localhost:5000/mp4", {
       method: "POST",
       body: formData,
     })

@@ -4,19 +4,15 @@ import SocialMediaForm from "./components/SocialMediaForm";
 import Results from "./components/Results";
 import Transcribe from "./components/Transcribe";
 import AtomicSpinner from "atomic-spinner";
-import { FFmpeg } from "@ffmpeg/ffmpeg";
-import { fetchFile, toBlobURL } from "@ffmpeg/util";
-import { useState, useRef } from "react";
+
+import { useState } from "react";
 
 function App() {
   const [title, setTitle] = useState("------------------");
   const [caption, setCaption] = useState("------------------");
   const [fromText, setFromText] = useState(false);
-  const [loaded, setLoaded] = useState(false);
+
   const [resultIsLoaded, setResultIsLoaded] = useState(true);
-  const ffmpegRef = useRef(new FFmpeg());
-  const videoRef = useRef(null);
-  const messageRef = useRef(null);
 
   const onSubmit = (data) => {
     setResultIsLoaded(false);
@@ -24,23 +20,6 @@ function App() {
     getCaption(data);
   };
 
-  const load = async () => {
-    const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.1/dist/umd";
-    const ffmpeg = ffmpegRef.current;
-    ffmpeg.on("log", ({ message }) => {
-      messageRef.current.innerHTML = message;
-    });
-    // toBlobURL is used to bypass CORS issue, urls with the same
-    // domain can be used directly.
-    await ffmpeg.load({
-      coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
-      wasmURL: await toBlobURL(
-        `${baseURL}/ffmpeg-core.wasm`,
-        "application/wasm"
-      ),
-    });
-    setLoaded(true);
-  };
   const getTitle = (data) => {
     fetch(`http://localhost:5000/get/title/${data}`)
       .then((response) => response.json())
@@ -54,8 +33,6 @@ function App() {
         setResultIsLoaded(true);
       });
   };
-
-  load();
 
   return (
     <div className="App flex flex-col justify-center align-center p-5 ">
@@ -122,35 +99,29 @@ function App() {
         </div>
       </nav>
 
-      {loaded ? (
-        <div className="main-content flex justify-center items-center">
-          {fromText ? (
-            <SocialMediaForm
-              onSubmit={onSubmit}
-              setResultIsLoaded={setResultIsLoaded}
-            />
-          ) : (
-            <Transcribe
-              setCaption={setCaption}
-              setTitle={setTitle}
-              setResultIsLoaded={setResultIsLoaded}
-            />
-          )}
+      <div className="main-content flex justify-center items-center">
+        {fromText ? (
+          <SocialMediaForm
+            onSubmit={onSubmit}
+            setResultIsLoaded={setResultIsLoaded}
+          />
+        ) : (
+          <Transcribe
+            setCaption={setCaption}
+            setTitle={setTitle}
+            setResultIsLoaded={setResultIsLoaded}
+          />
+        )}
 
-          {resultIsLoaded ? (
-            <Results title={title} caption={caption} />
-          ) : (
-            <div className="loader-container flex justify-center items-center">
-              <AtomicSpinner />
-              <p> Generating Magic...</p>
-            </div>
-          )}
-        </div>
-      ) : (
-        <div className="loader-container">
-          <AtomicSpinner />
-        </div>
-      )}
+        {resultIsLoaded ? (
+          <Results title={title} caption={caption} />
+        ) : (
+          <div className="loader-container flex justify-center items-center">
+            <AtomicSpinner />
+            <p> Generating Magic...</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
