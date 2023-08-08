@@ -14,7 +14,7 @@ var options = {
   maxAge: "1m",
   redirect: false,
 };
-app.use(express.static("build", options));
+app.use(express.static(path.join(__dirname, "build"), options));
 
 const port = process.env.PORT || 3000;
 
