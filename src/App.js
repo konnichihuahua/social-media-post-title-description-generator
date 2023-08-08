@@ -21,12 +21,12 @@ function App() {
   };
 
   const getTitle = (data) => {
-    fetch(`http://localhost:5000/get/title/${data}`)
+    fetch(`https://nice-lime-pigeon-veil.cyclic.app/get/title/${data}`)
       .then((response) => response.json())
       .then((data) => setTitle(data.title));
   };
   const getCaption = (data) => {
-    fetch(`http://localhost:5000/get/description/${data}`)
+    fetch(`https://nice-lime-pigeon-veil.cyclic.app/get/description/${data}`)
       .then((response) => response.json())
       .then((data) => {
         setCaption(data.description);
